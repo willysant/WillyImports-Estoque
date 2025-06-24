@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle de Estoque Willy</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <h1>Controle de Estoque Willy</h1>
+  <form id="product-form">
+    <input type="text" id="name" placeholder="Nome do produto" required/>
+    <input type="text" id="category" placeholder="Categoria"/>
+    <input type="number" id="quantity" placeholder="Quantidade" required/>
+    <input type="number" id="cost" placeholder="Preço de custo" required/>
+    <input type="number" id="price" placeholder="Preço de venda" required/>
+    <button type="submit">Adicionar Produto</button>
+  </form>
+  <hr/>
+  <h2>Estoque</h2>
+  <table id="inventory">
+    <thead>
+      <tr>
+        <th>Produto</th><th>Categoria</th><th>Qtd</th><th>Custo</th><th>Venda</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script src="script.js"></script>
+</body>
+</html>
