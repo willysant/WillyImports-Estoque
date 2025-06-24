@@ -1,11 +1,15 @@
-
 const form = document.getElementById('product-form');
 const inventory = document.querySelector('#inventory tbody');
 
-let products = [];
+// Carrega produtos salvos no navegador
+let products = JSON.parse(localStorage.getItem('products')) || [];
+
+// Atualiza a tabela ao abrir o app
+renderTable();
 
 form.addEventListener('submit', function(e) {
   e.preventDefault();
+
   const name = document.getElementById('name').value;
   const category = document.getElementById('category').value;
   const quantity = parseInt(document.getElementById('quantity').value);
@@ -14,6 +18,10 @@ form.addEventListener('submit', function(e) {
 
   const product = { name, category, quantity, cost, price };
   products.push(product);
+
+  // Salva no localStorage
+  localStorage.setItem('products', JSON.stringify(products));
+
   renderTable();
   form.reset();
 });
@@ -27,7 +35,7 @@ function renderTable() {
       <td>${prod.quantity}</td>
       <td>R$ ${prod.cost.toFixed(2)}</td>
       <td>R$ ${prod.price.toFixed(2)}</td>
-      <td><button onclick="removeProduct(${i})">Excluir</button></td>
+      <td><button class="remove-btn" onclick="removeProduct(${i})">Excluir</button></td>
     </tr>`;
     inventory.innerHTML += row;
   });
@@ -35,5 +43,9 @@ function renderTable() {
 
 function removeProduct(index) {
   products.splice(index, 1);
+
+  // Atualiza localStorage
+  localStorage.setItem('products', JSON.stringify(products));
+
   renderTable();
 }
