@@ -1,0 +1,15 @@
+{
+  "name": "Willy Imports Estoque",
+  "short_name": "WillyEstoque",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e6f2ff",
+  "theme_color": "#3399ff",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
