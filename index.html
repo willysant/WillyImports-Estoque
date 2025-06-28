@@ -83,7 +83,7 @@
       <input type="number" placeholder="Quantidade" id="quantity" required/>
       <input type="number" placeholder="Preço de custo" id="cost" step="0.01" required/>
       <input type="number" placeholder="Preço de venda" id="price" step="0.01" required/>
-      <button id="saveProduct">Salvar Produto</button>
+      <button id="saveProduct" type="button">Salvar Produto</button>
     </div>
   </div>
 
@@ -131,19 +131,16 @@
     <tbody></tbody>
   </table>
 
+  <!-- Script de controle do modal -->
   <script>
-    // Elementos
     const modal = document.getElementById("productModal");
     const btn = document.getElementById("btnAddProduct");
     const span = document.getElementsByClassName("close")[0];
-    const saveBtn = document.getElementById("saveProduct");
 
-    // Abre o modal
     btn.onclick = function() {
       modal.style.display = "block";
     }
 
-    // Fecha o modal
     span.onclick = function() {
       modal.style.display = "none";
     }
@@ -153,14 +150,9 @@
         modal.style.display = "none";
       }
     }
-
-    // Salva produto (aciona submit do formulário que já existe no seu JS)
-    saveBtn.onclick = function() {
-      <button id="saveProduct" type="button">Salvar Produto</button>
-      modal.style.display = "none";
-    }
   </script>
 
+  <!-- Script principal do sistema -->
   <script src="script.js"></script>
 </body>
 </html>
