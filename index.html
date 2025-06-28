@@ -75,39 +75,42 @@
 
   <!-- Modal de cadastro -->
   <div id="productModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Novo Produto</h2>
-      <input type="text" placeholder="Nome do produto" id="name" required/>
-      <input type="text" placeholder="Categoria" id="category"/>
-      <input type="number" placeholder="Quantidade" id="quantity" required/>
-      <input type="number" placeholder="Preço de custo" id="cost" step="0.01" required/>
-      <input type="number" placeholder="Preço de venda" id="price" step="0.01" required/>
-      <button id="saveProduct" type="button">Salvar Produto</button>
-    </div>
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Novo Produto</h2>
+    <input type="text" placeholder="Nome do produto" id="name" required/>
+    <input type="text" placeholder="Categoria" id="category"/>
+    <input type="text" placeholder="Cor" id="color"/> <!-- NOVO -->
+    <input type="number" placeholder="Quantidade" id="quantity" required/>
+    <input type="number" placeholder="Preço de custo" id="cost" step="0.01" required/>
+    <input type="number" placeholder="Preço de venda" id="price" step="0.01" required/>
+    <button id="saveProduct" type="button">Salvar Produto</button>
   </div>
+</div>
 
-  <input type="text" id="search" placeholder="🔍 Buscar produto ou categoria" />
-  <button id="export-btn">📄 Exportar Estoque (CSV)</button>
+<!-- Campo de busca e botão de exportar -->
+<input type="text" id="search" placeholder="🔍 Buscar produto, cor ou categoria" />
+<button id="export-btn">📄 Exportar Estoque (CSV)</button>
 
-  <hr/>
+<hr/>
 
-  <h2>Estoque</h2>
-  <table id="inventory">
-    <thead>
-      <tr>
-        <th>Produto</th>
-        <th>Categoria</th>
-        <th>Qtd</th>
-        <th>Custo</th>
-        <th>Venda</th>
-        <th>Lucro Unidade</th>
-        <th>Data</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<h2>Estoque</h2>
+<table id="inventory">
+  <thead>
+    <tr>
+      <th>Produto</th>
+      <th>Categoria</th>
+      <th>Cor</th> <!-- NOVO -->
+      <th>Qtd</th>
+      <th>Custo</th>
+      <th>Venda</th>
+      <th>Lucro Unidade</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
   <div id="totals">
     <p><strong>Total de produtos:</strong> <span id="total-products">0</span></p>
