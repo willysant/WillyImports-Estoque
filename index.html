@@ -2,16 +2,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="manifest" href="manifest.json" />
-<link rel="icon" href="logo.png" type="image/png">
-<meta name="theme-color" content="#3399ff"/>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Controle de Estoque Willy</title>
   <link rel="stylesheet" href="style.css"/>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="logo.png" type="image/png">
+  <meta name="theme-color" content="#3399ff"/>
 </head>
 <body>
   <h1>Controle de Estoque Willy</h1>
+
+  <!-- Formulário -->
   <form id="product-form">
     <input type="text" id="name" placeholder="Nome do produto" required/>
     <input type="text" id="category" placeholder="Categoria"/>
@@ -20,16 +24,38 @@
     <input type="number" id="price" placeholder="Preço de venda" required/>
     <button type="submit">Adicionar Produto</button>
   </form>
+
+  <!-- Botão Exportar -->
+  <button id="export-btn">📄 Exportar Estoque (Excel)</button>
+
   <hr/>
+
+  <!-- Tabela -->
   <h2>Estoque</h2>
   <table id="inventory">
     <thead>
       <tr>
-        <th>Produto</th><th>Categoria</th><th>Qtd</th><th>Custo</th><th>Venda</th><th>Ações</th>
+        <th>Produto</th>
+        <th>Categoria</th>
+        <th>Qtd</th>
+        <th>Custo</th>
+        <th>Venda</th>
+        <th>Data</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <!-- Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registrado!'));
+    }
+  </script>
+
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
