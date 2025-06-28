@@ -1,34 +1,52 @@
-const form = document.getElementById('product-form');
+// Elementos principais
 const inventory = document.querySelector('#inventory tbody');
 const sales = document.querySelector('#sales tbody');
 const exportBtn = document.getElementById('export-btn');
 const searchInput = document.getElementById('search');
+const saveBtn = document.getElementById('saveProduct');
 
+// Totais
 const totalProducts = document.getElementById('total-products');
 const totalCost = document.getElementById('total-cost');
 const totalPrice = document.getElementById('total-price');
 const totalProfit = document.getElementById('total-profit');
 
+// Dados salvos no navegador
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
 
+// Render inicial
 renderTable();
 renderSales();
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  const name = document.getElementById('name').value;
-  const category = document.getElementById('category').value;
+// Botão salvar do modal
+saveBtn.addEventListener('click', function () {
+  const name = document.getElementById('name').value.trim();
+  const category = document.getElementById('category').value.trim();
   const quantity = parseInt(document.getElementById('quantity').value);
   const cost = parseFloat(document.getElementById('cost').value);
   const price = parseFloat(document.getElementById('price').value);
   const date = new Date().toLocaleDateString('pt-BR');
 
+  if (!name || isNaN(quantity) || isNaN(cost) || isNaN(price)) {
+    alert('Preencha todos os campos obrigatórios!');
+    return;
+  }
+
   const product = { name, category, quantity, cost, price, date };
   products.push(product);
   localStorage.setItem('products', JSON.stringify(products));
   renderTable();
-  form.reset();
+
+  // Limpa inputs
+  document.getElementById('name').value = '';
+  document.getElementById('category').value = '';
+  document.getElementById('quantity').value = '';
+  document.getElementById('cost').value = '';
+  document.getElementById('price').value = '';
+
+  // Fecha modal
+  document.getElementById('productModal').style.display = 'none';
 });
 
 function renderTable() {
@@ -44,6 +62,7 @@ function renderTable() {
       const lucroUnidade = prod.price - prod.cost;
       const row = document.createElement('tr');
 
+      // Destaque para baixo estoque
       if (prod.quantity <= 3) row.style.backgroundColor = '#ffcccc';
 
       row.innerHTML = `
@@ -76,7 +95,6 @@ function removeOne(index) {
   const prod = products[index];
   prod.quantity -= 1;
 
-  // Registrar saída na venda
   const sale = {
     name: prod.name,
     category: prod.category,
@@ -85,7 +103,6 @@ function removeOne(index) {
   };
   salesHistory.push(sale);
 
-  // Remover produto se quantidade zerar
   if (prod.quantity <= 0) {
     products.splice(index, 1);
   }
@@ -110,7 +127,7 @@ function renderSales() {
   });
 }
 
-exportBtn.addEventListener('click', function() {
+exportBtn.addEventListener('click', function () {
   let csv = 'Produto,Categoria,Quantidade,Custo,Preço de Venda,Lucro Unidade,Data\n';
   products.forEach(prod => {
     const lucroUnidade = prod.price - prod.cost;
