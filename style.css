@@ -34,3 +34,9 @@ th, td {
   border-radius: 20px;
   cursor: pointer;
 }
+.logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 100px; /* ajuste o tamanho se quiser */
+}
