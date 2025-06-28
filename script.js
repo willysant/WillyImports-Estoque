@@ -1,10 +1,15 @@
 const form = document.getElementById('product-form');
 const inventory = document.querySelector('#inventory tbody');
 const exportBtn = document.getElementById('export-btn');
+const searchInput = document.getElementById('search');
+
+const totalProducts = document.getElementById('total-products');
+const totalCost = document.getElementById('total-cost');
+const totalPrice = document.getElementById('total-price');
+const totalProfit = document.getElementById('total-profit');
 
 let products = JSON.parse(localStorage.getItem('products')) || [];
 
-// Renderiza ao carregar
 renderTable();
 
 form.addEventListener('submit', function(e) {
@@ -24,19 +29,39 @@ form.addEventListener('submit', function(e) {
 });
 
 function renderTable() {
+  const filter = searchInput.value.toLowerCase();
   inventory.innerHTML = '';
+  let totalQtd = 0, sumCost = 0, sumPrice = 0;
+
   products.forEach((prod, i) => {
-    const row = `<tr>
-      <td>${prod.name}</td>
-      <td>${prod.category}</td>
-      <td>${prod.quantity}</td>
-      <td>R$ ${prod.cost.toFixed(2)}</td>
-      <td>R$ ${prod.price.toFixed(2)}</td>
-      <td>${prod.date}</td>
-      <td><button onclick="removeProduct(${i})" class="delete-btn">Excluir</button></td>
-    </tr>`;
-    inventory.innerHTML += row;
+    if (
+      prod.name.toLowerCase().includes(filter) ||
+      prod.category.toLowerCase().includes(filter)
+    ) {
+      const row = document.createElement('tr');
+      if (prod.quantity <= 3) row.style.backgroundColor = '#ffcccc';
+
+      row.innerHTML = `
+        <td>${prod.name}</td>
+        <td>${prod.category}</td>
+        <td>${prod.quantity}</td>
+        <td>R$ ${prod.cost.toFixed(2)}</td>
+        <td>R$ ${prod.price.toFixed(2)}</td>
+        <td>${prod.date}</td>
+        <td><button onclick="removeProduct(${i})" class="delete-btn">Excluir</button></td>
+      `;
+      inventory.appendChild(row);
+
+      totalQtd++;
+      sumCost += prod.cost * prod.quantity;
+      sumPrice += prod.price * prod.quantity;
+    }
   });
+
+  totalProducts.textContent = totalQtd;
+  totalCost.textContent = sumCost.toFixed(2);
+  totalPrice.textContent = sumPrice.toFixed(2);
+  totalProfit.textContent = (sumPrice - sumCost).toFixed(2);
 }
 
 function removeProduct(index) {
@@ -62,3 +87,5 @@ exportBtn.addEventListener('click', function() {
   a.click();
   document.body.removeChild(a);
 });
+
+searchInput.addEventListener('input', renderTable);
