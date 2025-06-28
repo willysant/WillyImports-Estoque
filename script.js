@@ -153,3 +153,14 @@ exportBtn.addEventListener('click', function () {
 });
 
 searchInput.addEventListener('input', renderTable);
+const clearSalesBtn = document.getElementById('clear-sales');
+
+clearSalesBtn.addEventListener('click', function () {
+  const confirmClear = confirm("Tem certeza que deseja excluir todas as vendas? Essa ação não pode ser desfeita.");
+  if (confirmClear) {
+    salesHistory = [];
+    localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+    renderSales();
+    alert("Histórico de vendas limpo com sucesso!");
+  }
+});
