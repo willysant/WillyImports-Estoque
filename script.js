@@ -11,7 +11,7 @@ const totalCost = document.getElementById('total-cost');
 const totalPrice = document.getElementById('total-price');
 const totalProfit = document.getElementById('total-profit');
 
-// Dados salvos no navegador
+// Dados locais
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
 
@@ -19,10 +19,11 @@ let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
 renderTable();
 renderSales();
 
-// Botão salvar do modal
+// Salvar produto
 saveBtn.addEventListener('click', function () {
   const name = document.getElementById('name').value.trim();
   const category = document.getElementById('category').value.trim();
+  const color = document.getElementById('color').value.trim(); // COR
   const quantity = parseInt(document.getElementById('quantity').value);
   const cost = parseFloat(document.getElementById('cost').value);
   const price = parseFloat(document.getElementById('price').value);
@@ -33,14 +34,15 @@ saveBtn.addEventListener('click', function () {
     return;
   }
 
-  const product = { name, category, quantity, cost, price, date };
+  const product = { name, category, color, quantity, cost, price, date };
   products.push(product);
   localStorage.setItem('products', JSON.stringify(products));
   renderTable();
 
-  // Limpa inputs
+  // Limpa os campos
   document.getElementById('name').value = '';
   document.getElementById('category').value = '';
+  document.getElementById('color').value = '';
   document.getElementById('quantity').value = '';
   document.getElementById('cost').value = '';
   document.getElementById('price').value = '';
@@ -55,19 +57,22 @@ function renderTable() {
   let totalQtd = 0, sumCost = 0, sumPrice = 0;
 
   products.forEach((prod, i) => {
-    if (
+    const match = (
       prod.name.toLowerCase().includes(filter) ||
-      prod.category.toLowerCase().includes(filter)
-    ) {
+      prod.category.toLowerCase().includes(filter) ||
+      (prod.color && prod.color.toLowerCase().includes(filter))
+    );
+
+    if (match) {
       const lucroUnidade = prod.price - prod.cost;
       const row = document.createElement('tr');
 
-      // Destaque para baixo estoque
       if (prod.quantity <= 3) row.style.backgroundColor = '#ffcccc';
 
       row.innerHTML = `
         <td>${prod.name}</td>
         <td>${prod.category}</td>
+        <td>${prod.color || '-'}</td>
         <td>${prod.quantity}</td>
         <td>R$ ${prod.cost.toFixed(2)}</td>
         <td>R$ ${prod.price.toFixed(2)}</td>
@@ -98,6 +103,7 @@ function removeOne(index) {
   const sale = {
     name: prod.name,
     category: prod.category,
+    color: prod.color,
     lucro: (prod.price - prod.cost).toFixed(2),
     date: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR')
   };
@@ -128,10 +134,10 @@ function renderSales() {
 }
 
 exportBtn.addEventListener('click', function () {
-  let csv = 'Produto,Categoria,Quantidade,Custo,Preço de Venda,Lucro Unidade,Data\n';
+  let csv = 'Produto,Categoria,Cor,Quantidade,Custo,Preço de Venda,Lucro Unidade,Data\n';
   products.forEach(prod => {
     const lucroUnidade = prod.price - prod.cost;
-    csv += `${prod.name},${prod.category},${prod.quantity},${prod.cost.toFixed(2)},${prod.price.toFixed(2)},${lucroUnidade.toFixed(2)},${prod.date}\n`;
+    csv += `${prod.name},${prod.category},${prod.color || '-'},${prod.quantity},${prod.cost.toFixed(2)},${prod.price.toFixed(2)},${lucroUnidade.toFixed(2)},${prod.date}\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv' });
