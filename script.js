@@ -21,23 +21,28 @@ function adicionarProduto() {
   const venda = parseFloat(prompt("Preço de venda:").replace(",", "."));
   if (isNaN(venda)) return alert("Preço de venda inválido!");
 
-  const data = new Date().toLocaleDateString();
+  const data = new Date().toISOString().split("T")[0]; // ISO, sem problemas com locale
 
-  estoque.push({ nome, categoria, cor, qtd, custo, venda, data });
+  const id = Date.now(); // ID único
+  estoque.push({ id, nome, categoria, cor, qtd, custo, venda, data });
   salvarDados();
   renderizar();
 }
 
 function venderProduto(index) {
+  estoque = JSON.parse(localStorage.getItem("estoque")) || estoque;
+  vendas = JSON.parse(localStorage.getItem("vendas")) || vendas;
+
   if (estoque[index].qtd > 0) {
     estoque[index].qtd--;
     vendas.push({
       nome: estoque[index].nome,
       categoria: estoque[index].categoria,
-      lucro: (estoque[index].venda - estoque[index].custo).toFixed(2),
-      data: new Date().toLocaleDateString()
+      lucro: +(estoque[index].venda - estoque[index].custo).toFixed(2),
+      data: new Date().toISOString().split("T")[0]
     });
     salvarDados();
+    alert("Venda registrada com sucesso!");
     renderizar();
   }
 }
@@ -46,6 +51,7 @@ function excluirTodasVendas() {
   if (confirm("Tem certeza que deseja excluir todas as vendas?")) {
     vendas = [];
     salvarDados();
+    alert("Vendas excluídas.");
     renderizar();
   }
 }
@@ -59,15 +65,15 @@ function filtrarData(tipo) {
   let filtro;
 
   if (tipo === "hoje") {
-    filtro = hoje.toLocaleDateString();
+    filtro = hoje.toISOString().split("T")[0];
   } else if (tipo === "ontem") {
     hoje.setDate(hoje.getDate() - 1);
-    filtro = hoje.toLocaleDateString();
+    filtro = hoje.toISOString().split("T")[0];
   } else if (tipo === "semana") {
     const seteDias = new Date();
     seteDias.setDate(seteDias.getDate() - 7);
     const vendasFiltradas = vendas.filter(v => {
-      const dataVenda = new Date(v.data.split("/").reverse().join("-"));
+      const dataVenda = new Date(v.data);
       return dataVenda >= seteDias;
     });
     return renderizar("", vendasFiltradas);
