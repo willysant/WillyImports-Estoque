@@ -1,42 +1,100 @@
 body {
-  background: #e6f2ff;
   font-family: Arial, sans-serif;
+  background: #eef3f9;
   padding: 20px;
+  margin: 0;
+  color: #222;
 }
 
-input, button {
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #3399ff;
-  margin: 5px 0;
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-#export-btn {
-  margin-left: 10px;
+h1 {
+  font-size: 1.8em;
+}
+
+.controls {
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button, input, select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  margin: 15px 0;
+  background: white;
 }
 
 th, td {
   padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
+  border: 1px solid #ddd;
+  text-align: center;
 }
 
-.delete-btn {
-  background: #ff4d4d;
-  border: none;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 20px;
-  cursor: pointer;
+th {
+  background: #f0f0f0;
 }
-.logo {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 100px; /* ajuste o tamanho se quiser */
+
+.low-stock {
+  background-color: #ffdddd;
+  color: #b30000;
+  font-weight: bold;
+}
+
+.summary {
+  background: #f7f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.categorias {
+  font-size: 0.9em;
+  color: #333;
+  margin-left: 10px;
+}
+
+.btn-excluir {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+}
+
+@media(max-width: 600px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  th {
+    background: #eee;
+  }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-weight: bold;
+  }
 }
