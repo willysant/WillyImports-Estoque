@@ -1,20 +1,38 @@
-
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  margin: 20px;
   background: #f4f4f4;
 }
-form input, form button {
-  display: block;
-  margin: 10px 0;
-  padding: 10px;
+
+header {
+  margin-bottom: 20px;
 }
+
+header h1 {
+  margin: 0 0 10px 0;
+}
+
+header button, header input {
+  margin-right: 10px;
+}
+
 table {
   width: 100%;
-  background: #fff;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
+
 th, td {
-  padding: 10px;
   border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.low-stock {
+  background: #ffe5e5;
+}
+
+.totais p {
+  margin: 5px 0;
+  font-weight: bold;
 }
