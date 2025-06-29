@@ -8,14 +8,20 @@ function salvarDados() {
 
 function adicionarProduto() {
   const nome = prompt("Nome do produto:");
+  if (!nome) return alert("Nome obrigatório!");
+
   const categoria = prompt("Categoria:");
   const cor = prompt("Cor:");
   const qtd = parseInt(prompt("Quantidade:"), 10);
-  const custo = parseFloat(prompt("Preço de custo:"));
-  const venda = parseFloat(prompt("Preço de venda:"));
-  const data = new Date().toLocaleDateString();
+  if (isNaN(qtd)) return alert("Quantidade inválida!");
 
-  if (!nome || isNaN(qtd)) return;
+  const custo = parseFloat(prompt("Preço de custo:").replace(",", "."));
+  if (isNaN(custo)) return alert("Preço de custo inválido!");
+
+  const venda = parseFloat(prompt("Preço de venda:").replace(",", "."));
+  if (isNaN(venda)) return alert("Preço de venda inválido!");
+
+  const data = new Date().toLocaleDateString();
 
   estoque.push({ nome, categoria, cor, qtd, custo, venda, data });
   salvarDados();
