@@ -1,77 +1,55 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WILLY IMPORTS</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="logo.png">
+  <title>Controle de Estoque</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>WILLY IMPORTS</h1>
-    <img src="logo.png" alt="Logo" height="50" />
-  </header>
+  <h1>Controle de Estoque</h1>
+  
+  <button onclick="adicionarProduto()">Adicionar Produto</button>
+  <button onclick="exportarCSV()">Exportar CSV</button>
+  <button onclick="excluirTodasVendas()">Excluir Todas Vendas</button>
+  <input type="text" placeholder="Filtrar..." oninput="filtrarProdutos(this.value)">
 
-  <div class="controls">
-    <button onclick="adicionarProduto()">➕ Adicionar Produto</button>
-    <input type="text" placeholder="🔍 Buscar produto, categoria..." oninput="filtrarProdutos(this.value)" />
-    <button onclick="exportarCSV()">📤 Exportar Estoque (CSV)</button>
-    <select onchange="filtrarData(this.value)">
-      <option value="">📆 Filtro de Vendas</option>
-      <option value="hoje">Hoje</option>
-      <option value="ontem">Ontem</option>
-      <option value="semana">Últimos 7 dias</option>
-    </select>
+  <h2>Estoque</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Categoria</th>
+        <th>Cor</th>
+        <th>Qtd</th>
+        <th>Custo</th>
+        <th>Venda</th>
+        <th>Lucro Unit.</th>
+        <th>Data</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaEstoque"></tbody>
+  </table>
+
+  <h2>Vendas</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Categoria</th>
+        <th>Lucro</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaVendas"></tbody>
+  </table>
+
+  <div>
+    <p>Total de Produtos: <span id="totalProdutos">0</span></p>
+    <p>Total Custo: R$ <span id="totalCusto">0.00</span></p>
+    <p>Total Venda: R$ <span id="totalVenda">0.00</span></p>
+    <p>Lucro Bruto: R$ <span id="lucroBruto">0.00</span></p>
   </div>
-
-  <section>
-    <h2>Estoque <span class="categorias">SMARTWATCH • ACESSÓRIOS</span></h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th>Categoria</th>
-          <th>Cor</th>
-          <th>Qtd</th>
-          <th>Custo</th>
-          <th>Venda</th>
-          <th>Lucro Unidade</th>
-          <th>Data</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaEstoque"></tbody>
-    </table>
-  </section>
-
-  <section>
-    <h2>Vendas Realizadas</h2>
-    <button onclick="excluirTodasVendas()" class="btn-excluir">🗑️ Excluir Todas as Vendas</button>
-    <table>
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th>Categoria</th>
-          <th>Lucro Unidade</th>
-          <th>Data Venda</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaVendas"></tbody>
-    </table>
-  </section>
-
-  <section class="resumo-geral">
-    <h2>Resumo Financeiro</h2>
-    <div class="summary">
-      <p><strong>Total de produtos:</strong> <span id="totalProdutos">0</span></p>
-      <p><strong>Valor total de custo:</strong> R$ <span id="totalCusto">0.00</span></p>
-      <p><strong>Valor total de venda:</strong> R$ <span id="totalVenda">0.00</span></p>
-      <p><strong>Lucro bruto estimado:</strong> R$ <span id="lucroBruto">0.00</span></p>
-    </div>
-  </section>
 
   <script src="script.js"></script>
 </body>
