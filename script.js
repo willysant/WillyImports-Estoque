@@ -30,13 +30,25 @@ function adicionarProduto() {
 
 function venderProduto(index) {
   if (estoque[index].qtd > 0) {
+    const pago = parseFloat(prompt("Quanto o cliente pagou?").replace(",", "."));
+    if (isNaN(pago) || pago <= 0) {
+      alert("Valor inválido!");
+      return;
+    }
+
     estoque[index].qtd--;
+    const custo = estoque[index].custo;
+    const lucroReal = +(pago - custo).toFixed(2);
+
     vendas.push({
       nome: estoque[index].nome,
       categoria: estoque[index].categoria,
-      lucro: +(estoque[index].venda - estoque[index].custo).toFixed(2),
+      valorPago: pago.toFixed(2),
+      custo: custo.toFixed(2),
+      lucro: lucroReal,
       data: new Date().toISOString().split("T")[0]
     });
+
     salvarDados();
     renderizar();
   } else {
@@ -100,15 +112,16 @@ function renderizar(filtro = "") {
     totalVenda += p.venda * p.qtd;
   });
 
-  vendas.forEach(v => {
-    tbodyVendas.innerHTML += `
-      <tr>
-        <td>${v.nome}</td>
-        <td>${v.categoria}</td>
-        <td>R$ ${v.lucro}</td>
-        <td>${v.data}</td>
-      </tr>`;
-  });
+ vendas.forEach(v => {
+  tbodyVendas.innerHTML += `
+    <tr>
+      <td>${v.nome}</td>
+      <td>${v.categoria}</td>
+      <td>R$ ${v.valorPago}</td>
+      <td>R$ ${v.lucro}</td>
+      <td>${v.data}</td>
+    </tr>`;
+});
 
   document.getElementById("totalProdutos").textContent = totalProdutos;
   document.getElementById("totalCusto").textContent = totalCusto.toFixed(2);
