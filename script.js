@@ -1,4 +1,4 @@
-let estoque = JSON.parse(localStorage.getItem("estoque")) || [];
+et estoque = JSON.parse(localStorage.getItem("estoque")) || [];
 let vendas = JSON.parse(localStorage.getItem("vendas")) || [];
 
 function salvarDados() {
@@ -37,13 +37,6 @@ function venderProduto(index) {
       lucro: +(estoque[index].venda - estoque[index].custo).toFixed(2),
       data: new Date().toISOString().split("T")[0]
     });
-    salvarDados();
-    renderizar();
-  } else {
-    alert("Estoque esgotado!");
-  }
-}
-
     salvarDados();
     renderizar();
   } else {
@@ -107,15 +100,15 @@ function renderizar(filtro = "") {
     totalVenda += p.venda * p.qtd;
   });
 
-vendas.forEach(v => {
-  tbodyVendas.innerHTML += `
-    <tr>
-      <td>${v.nome}</td>
-      <td>${v.categoria}</td>
-      <td>R$ ${v.lucro}</td>
-      <td>${v.data}</td>
-    </tr>`;
-});
+  vendas.forEach(v => {
+    tbodyVendas.innerHTML += `
+      <tr>
+        <td>${v.nome}</td>
+        <td>${v.categoria}</td>
+        <td>R$ ${v.lucro}</td>
+        <td>${v.data}</td>
+      </tr>`;
+  });
 
   document.getElementById("totalProdutos").textContent = totalProdutos;
   document.getElementById("totalCusto").textContent = totalCusto.toFixed(2);
