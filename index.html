@@ -1,48 +1,167 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Controle de Estoque Willy</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WILLY IMPORTS</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Modal básico */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      padding-top: 100px; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .modal-content input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+    }
+    .modal-content button {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #btnAddProduct {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .logo {
+      max-width: 120px;
+      display: block;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Controle de Estoque Willy</h1>
-    <button onclick="adicionarProduto()">Adicionar Produto</button>
-    <button onclick="exportarCSV()">Exportar CSV</button>
-    <button onclick="excluirTodasVendas()">Limpar Vendas</button>
-    <input type="text" id="filtro" placeholder="Filtrar..." oninput="filtrarProdutos(this.value)" />
-  </header>
+  <h1>WILLY IMPORTS</h1>
+  <img src="logo.png" alt="Logo Willy Imports" class="logo">
 
-  <main>
-    <h2>Estoque</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th><th>Categoria</th><th>Cor</th><th>Qtd</th>
-          <th>Custo</th><th>Venda</th><th>Lucro Unit.</th><th>Data</th><th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaEstoque"></tbody>
-    </table>
+  <!-- Botão para abrir modal -->
+  <button id="btnAddProduct">Adicionar Produto</button>
 
-    <h2>Vendas</h2>
-    <table>
-      <thead>
-        <tr><th>Nome</th><th>Categoria</th><th>Lucro</th><th>Data</th></tr>
-      </thead>
-      <tbody id="tabelaVendas"></tbody>
-    </table>
+  <!-- Modal de cadastro -->
+  <div id="productModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Novo Produto</h2>
+    <input type="text" placeholder="Nome do produto" id="name" required/>
+    <input type="text" placeholder="Categoria" id="category"/>
+    <input type="text" placeholder="Cor" id="color"/> <!-- NOVO -->
+    <input type="number" placeholder="Quantidade" id="quantity" required/>
+    <input type="number" placeholder="Preço de custo" id="cost" step="0.01" required/>
+    <input type="number" placeholder="Preço de venda" id="price" step="0.01" required/>
+    <button id="saveProduct" type="button">Salvar Produto</button>
+  </div>
+</div>
 
-    <div class="totais">
-      <p>Total Produtos: <span id="totalProdutos">0</span></p>
-      <p>Total Custo: R$ <span id="totalCusto">0.00</span></p>
-      <p>Total Venda: R$ <span id="totalVenda">0.00</span></p>
-      <p>Lucro Bruto: R$ <span id="lucroBruto">0.00</span></p>
-    </div>
-  </main>
+<!-- Campo de busca e botão de exportar -->
+<input type="text" id="search" placeholder="🔍 Buscar produto, cor ou categoria" />
+<button id="export-btn">📄 Exportar Estoque (CSV)</button>
 
+<hr/>
+
+<h2>Estoque</h2>
+<table id="inventory">
+  <thead>
+    <tr>
+      <th>Produto</th>
+      <th>Categoria</th>
+      <th>Cor</th> <!-- NOVO -->
+      <th>Qtd</th>
+      <th>Custo</th>
+      <th>Venda</th>
+      <th>Lucro Unidade</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+  <div id="totals">
+    <p><strong>Total de produtos:</strong> <span id="total-products">0</span></p>
+    <p><strong>Valor total de custo:</strong> R$ <span id="total-cost">0.00</span></p>
+    <p><strong>Valor total de venda:</strong> R$ <span id="total-price">0.00</span></p>
+    <p><strong>Lucro bruto estimado:</strong> R$ <span id="total-profit">0.00</span></p>
+  </div>
+
+  <hr/>
+
+  <h2>Vendas Realizadas</h2>
+<button id="clear-sales" style="background-color: #dc3545; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+  🗑️ Excluir Todas as Vendas
+</button>
+  <table id="sales">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Categoria</th>
+        <th>Lucro Unidade</th>
+        <th>Data Venda</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Script de controle do modal -->
+  <script>
+    const modal = document.getElementById("productModal");
+    const btn = document.getElementById("btnAddProduct");
+    const span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Script principal do sistema -->
+  <script src="script.js"></script>
+</body>
+</html>
   <script src="script.js"></script>
 </body>
 </html>
