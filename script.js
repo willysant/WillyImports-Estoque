@@ -1,127 +1,78 @@
-let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
-let vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
-
-function salvar() {
-  localStorage.setItem('produtos', JSON.stringify(produtos));
-  localStorage.setItem('vendas', JSON.stringify(vendas));
-  render();
+// Função para remover acentos e espaços para CSV
+function sanitizeCSV(str) {
+  return '"' + str.replace(/"/g, '""') + '"';
 }
 
-function adicionarProduto() {
-  const produto = prompt("Produto:");
-  const categoria = prompt("Categoria:");
-  const cor = prompt("Cor:");
-  const qtd = parseInt(prompt("Quantidade:"), 10);
-  const custo = parseFloat(prompt("Custo por unidade:")).toFixed(2);
-  const venda = parseFloat(prompt("Preço de venda:")).toFixed(2);
-  const lucro = (venda - custo).toFixed(2);
-  const data = new Date().toLocaleDateString();
+document.addEventListener('DOMContentLoaded', () => {
+  const table = document.getElementById('estoqueTable');
+  const exportarCSVBtn = document.getElementById('exportarCSV');
+  const exportarPDFBtn = document.getElementById('exportarPDF');
 
-  produtos.push({ produto, categoria, cor, qtd, custo, venda, lucro, data });
-  salvar();
-}
+  // Função para exportar CSV
+  exportarCSVBtn.addEventListener('click', () => {
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
 
-function vender(index) {
-  const p = produtos[index];
-  const pago = parseFloat(prompt(`Quanto o cliente pagou? Preço padrão: R$ ${p.venda}`));
-  const lucro = (pago - p.custo).toFixed(2);
-  const dataVenda = new Date().toLocaleString();
+    rows.forEach(row => {
+      let cols = row.querySelectorAll('th, td');
+      let rowData = [];
+      cols.forEach(col => {
+        rowData.push(sanitizeCSV(col.innerText.trim()));
+      });
+      csv.push(rowData.join(','));
+    });
 
-  vendas.push({ produto: p.produto, categoria: p.categoria, lucro, dataVenda });
-  p.qtd -= 1;
-  if (p.qtd <= 0) produtos.splice(index, 1);
-  salvar();
-}
-
-function excluirProduto(index) {
-  produtos.splice(index, 1);
-  salvar();
-}
-
-function excluirTodasVendas() {
-  if (confirm("Tem certeza que quer excluir todas as vendas?")) {
-    vendas = [];
-    salvar();
-  }
-}
-
-function filtrarProdutos() {
-  render();
-}
-
-function exportarCSV() {
-  let csv = "Produto,Categoria,Cor,Qtd,Custo,Venda,Lucro Unidade,Data\n";
-  produtos.forEach(p => {
-    csv += `${p.produto},${p.categoria},${p.cor},${p.qtd},${p.custo},${p.venda},${p.lucro},${p.data}\n`;
+    const csvString = csv.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'estoque.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   });
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'estoque.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
-async function exportarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  // Função para exportar PDF (usando jsPDF)
+  exportarPDFBtn.addEventListener('click', () => {
+    import('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(jsPDFModule => {
+      const { jsPDF } = jsPDFModule;
+      const doc = new jsPDF();
+      const rows = [];
+      const headers = [];
 
-  doc.text("Estoque Willy Imports", 10, 10);
-  let y = 20;
-  produtos.forEach(p => {
-    doc.text(
-      `${p.produto} | ${p.categoria} | ${p.cor} | Qtd: ${p.qtd} | Custo: R$ ${p.custo} | Venda: R$ ${p.venda} | Lucro: R$ ${p.lucro} | ${p.data}`,
-      10, y
-    );
-    y += 8;
-    if (y > 280) {
-      doc.addPage();
-      y = 20;
+      table.querySelectorAll('thead th').forEach(th => headers.push(th.innerText.trim()));
+      table.querySelectorAll('tbody tr').forEach(tr => {
+        let rowData = [];
+        tr.querySelectorAll('td').forEach(td => rowData.push(td.innerText.trim()));
+        rows.push(rowData);
+      });
+
+      doc.text('Controle de Estoque - Willy Imports', 14, 15);
+      doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: 25,
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [233, 30, 99] },
+      });
+
+      doc.save('estoque.pdf');
+    });
+  });
+
+  // Função para tratar clique em vender (excluir linha com valor pago)
+  table.addEventListener('click', (e) => {
+    if (e.target.classList.contains('vender-btn')) {
+      const tr = e.target.closest('tr');
+      const produto = tr.querySelector('td:first-child').innerText;
+      const quantidade = tr.querySelector('td:nth-child(2)').innerText;
+
+      let valorPago = prompt(`Digite o valor pago pelo cliente para o produto "${produto}" (Qtd: ${quantidade}):`, '');
+      if (valorPago !== null && valorPago.trim() !== '') {
+        // Aqui você pode salvar o valorPago em algum lugar ou processar
+        alert(`Venda registrada: Produto "${produto}" vendido por R$ ${valorPago}`);
+        tr.remove();
+      }
     }
   });
-
-  doc.save("estoque.pdf");
-}
-
-function render() {
-  const filtro = document.getElementById('busca').value.toLowerCase();
-  const tbody = document.querySelector("#estoque tbody");
-  tbody.innerHTML = "";
-  let totalCusto = 0, totalVenda = 0;
-
-  produtos.forEach((p, i) => {
-    if (!p.produto.toLowerCase().includes(filtro)) return;
-    totalCusto += p.custo * p.qtd;
-    totalVenda += p.venda * p.qtd;
-
-    const tr = document.createElement('tr');
-    tr.classList.add('colored');
-    tr.innerHTML = `
-      <td>${p.produto}</td><td>${p.categoria}</td><td>${p.cor}</td><td>${p.qtd}</td>
-      <td>R$ ${p.custo}</td><td>R$ ${p.venda}</td><td>R$ ${p.lucro}</td><td>${p.data}</td>
-      <td>
-        <button class="blue" onclick="vender(${i})">Vender</button>
-        <button class="red" onclick="excluirProduto(${i})">Excluir ${p.qtd}</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById('resumo').innerHTML = `
-    <p>Total de produtos: ${produtos.reduce((a, p) => a + p.qtd, 0)}</p>
-    <p>Valor total de custo: R$ ${totalCusto.toFixed(2)}</p>
-    <p>Valor total de venda: R$ ${totalVenda.toFixed(2)}</p>
-    <p>Lucro bruto estimado: R$ ${(totalVenda - totalCusto).toFixed(2)}</p>
-  `;
-
-  const vendasTbody = document.querySelector("#vendas tbody");
-  vendasTbody.innerHTML = "";
-  vendas.forEach(v => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${v.produto}</td><td>${v.categoria}</td><td>R$ ${v.lucro}</td><td>${v.dataVenda}</td>`;
-    vendasTbody.appendChild(tr);
-  });
-}
-
-render();
+});
