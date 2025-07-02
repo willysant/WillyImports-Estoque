@@ -2,40 +2,41 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WILLY IMPORTS - Controle de Estoque</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Willy Imports - Controle de Estoque</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>WILLY IMPORTS</h1>
-  <button class="blue" onclick="adicionarProduto()">Adicionar Produto</button>
-  <input type="text" id="busca" placeholder="Buscar produto..." onkeyup="filtrarProdutos()" />
-  <button class="blue" onclick="exportarCSV()">Exportar Estoque (CSV)</button>
-  <button class="blue" onclick="exportarPDF()">Exportar Estoque (PDF)</button>
-  <img src="logo.png" alt="Logo" class="logo">
+  <header>
+    <img src="logo.png" alt="Logo Willy Imports" class="logo" />
+    <h1>Willy Imports - Controle de Estoque</h1>
+  </header>
+  <main>
+    <table id="estoqueTable">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Preço Unitário</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Exemplo de linha -->
+        <tr>
+          <td>Produto A</td>
+          <td>10</td>
+          <td>R$ 50,00</td>
+          <td><button class="vender-btn">Vender</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="botoes-exportar">
+      <button id="exportarCSV">Exportar CSV</button>
+      <button id="exportarPDF">Exportar PDF</button>
+    </div>
+  </main>
 
-  <h2>Estoque</h2>
-  <table id="estoque">
-    <thead>
-      <tr>
-        <th>Produto</th><th>Categoria</th><th>Cor</th><th>Qtd</th><th>Custo</th><th>Venda</th><th>Lucro Unidade</th><th>Data</th><th>Ações</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <div id="resumo"></div>
-
-  <h2>Vendas Realizadas</h2>
-  <button class="red" onclick="excluirTodasVendas()">🗑️ Excluir Todas as Vendas</button>
-  <table id="vendas">
-    <thead>
-      <tr><th>Produto</th><th>Categoria</th><th>Lucro Unidade</th><th>Data Venda</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
