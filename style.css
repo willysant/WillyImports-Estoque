@@ -1,93 +1,100 @@
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Arial', sans-serif;
-  background: #f8f9fa;
-  color: #333;
+  font-family: Arial, sans-serif;
+  background: #eef3f9;
   padding: 20px;
+  margin: 0;
+  color: #222;
 }
 
 header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.logo {
-  height: 50px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 h1 {
-  font-size: 1.8rem;
-  color: #444;
+  font-size: 1.8em;
+}
+
+.controls {
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button, input, select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  margin: 15px 0;
+  background: white;
 }
 
-thead {
-  background-color: #e91e63; /* rosa forte */
-  color: white;
-}
-
-thead th {
-  padding: 12px;
-  border: 1px solid #ccc;
-  font-weight: bold;
-  text-align: left;
-  border-radius: 8px 8px 0 0;
-}
-
-tbody td {
-  padding: 12px;
+th, td {
+  padding: 10px;
   border: 1px solid #ddd;
+  text-align: center;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+th {
+  background: #f0f0f0;
 }
 
-.vender-btn {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.vender-btn:hover {
-  background-color: #c2185b;
-}
-
-.botoes-exportar {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
-}
-
-.botoes-exportar button {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
+.low-stock {
+  background-color: #ffdddd;
+  color: #b30000;
   font-weight: bold;
-  transition: background-color 0.3s ease;
 }
 
-.botoes-exportar button:hover {
-  background-color: #c2185b;
+.summary {
+  background: #f7f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.categorias {
+  font-size: 0.9em;
+  color: #333;
+  margin-left: 10px;
+}
+
+.btn-excluir {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+}
+
+@media(max-width: 600px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  th {
+    background: #eee;
+  }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-weight: bold;
+  }
 }
