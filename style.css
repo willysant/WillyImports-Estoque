@@ -1,60 +1,85 @@
 body {
-  background: #dbeaf7; /* tom azul claro igual ao print */
-  font-family: Arial, sans-serif;
-  padding: 20px;
+  background: #e6eef7; /* tom bem claro */
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 20px 40px;
+  color: #111;
 }
 
 h1 {
   font-size: 28px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 40px;
+  font-size: 22px;
 }
 
 button {
-  padding: 10px 15px;
-  margin: 5px;
+  padding: 8px 15px;
+  margin: 5px 5px 5px 0;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 button.blue {
   background: #007bff;
-  color: white;
+  color: #fff;
 }
 
 button.red {
   background: #dc3545;
-  color: white;
+  color: #fff;
+}
+
+input[type="text"] {
+  padding: 8px 12px;
+  margin: 5px 10px 5px 0;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  width: 200px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  background: #fff;
 }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
+th {
+  background: #dbeaf7;
+  padding: 10px;
   text-align: left;
 }
 
-tr {
-  background: white;
+td {
+  padding: 10px;
+  border-top: 1px solid #ccc;
 }
 
 tr.colored {
-  background: #f5bcbc; /* rosa/vermelho claro */
+  background: #f5bcbc;
 }
 
 .logo {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 40px;
   width: 80px;
 }
 
-input[type="text"] {
-  padding: 8px;
-  margin: 5px;
-  width: 200px;
+#resumo {
+  margin-top: 20px;
+  line-height: 1.6;
+}
+
+#vendas {
+  margin-top: 20px;
+}
+
+#vendas th {
+  background: #dbeaf7;
 }
