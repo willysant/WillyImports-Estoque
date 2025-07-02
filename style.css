@@ -1,85 +1,93 @@
-body {
-  background: #e6eef7; /* tom bem claro */
-  font-family: Arial, Helvetica, sans-serif;
-  padding: 20px 40px;
-  color: #111;
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-h1 {
-  font-size: 28px;
+body {
+  font-family: 'Arial', sans-serif;
+  background: #f8f9fa;
+  color: #333;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
-h2 {
-  margin-top: 40px;
-  font-size: 22px;
+.logo {
+  height: 50px;
 }
 
-button {
-  padding: 8px 15px;
-  margin: 5px 5px 5px 0;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-button.blue {
-  background: #007bff;
-  color: #fff;
-}
-
-button.red {
-  background: #dc3545;
-  color: #fff;
-}
-
-input[type="text"] {
-  padding: 8px 12px;
-  margin: 5px 10px 5px 0;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  width: 200px;
+h1 {
+  font-size: 1.8rem;
+  color: #444;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
   background: #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-th {
-  background: #dbeaf7;
-  padding: 10px;
+thead {
+  background-color: #e91e63; /* rosa forte */
+  color: white;
+}
+
+thead th {
+  padding: 12px;
+  border: 1px solid #ccc;
+  font-weight: bold;
   text-align: left;
+  border-radius: 8px 8px 0 0;
 }
 
-td {
-  padding: 10px;
-  border-top: 1px solid #ccc;
+tbody td {
+  padding: 12px;
+  border: 1px solid #ddd;
 }
 
-tr.colored {
-  background: #f5bcbc;
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.logo {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  width: 80px;
+.vender-btn {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-#resumo {
-  margin-top: 20px;
-  line-height: 1.6;
+.vender-btn:hover {
+  background-color: #c2185b;
 }
 
-#vendas {
-  margin-top: 20px;
+.botoes-exportar {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
 }
 
-#vendas th {
-  background: #dbeaf7;
+.botoes-exportar button {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.botoes-exportar button:hover {
+  background-color: #c2185b;
 }
