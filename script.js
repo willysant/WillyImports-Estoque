@@ -1,166 +1,127 @@
-// Elementos principais
-const inventory = document.querySelector('#inventory tbody');
-const sales = document.querySelector('#sales tbody');
-const exportBtn = document.getElementById('export-btn');
-const searchInput = document.getElementById('search');
-const saveBtn = document.getElementById('saveProduct');
+let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+let vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
 
-// Totais
-const totalProducts = document.getElementById('total-products');
-const totalCost = document.getElementById('total-cost');
-const totalPrice = document.getElementById('total-price');
-const totalProfit = document.getElementById('total-profit');
+function salvar() {
+  localStorage.setItem('produtos', JSON.stringify(produtos));
+  localStorage.setItem('vendas', JSON.stringify(vendas));
+  render();
+}
 
-// Dados locais
-let products = JSON.parse(localStorage.getItem('products')) || [];
-let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
+function adicionarProduto() {
+  const produto = prompt("Produto:");
+  const categoria = prompt("Categoria:");
+  const cor = prompt("Cor:");
+  const qtd = parseInt(prompt("Quantidade:"), 10);
+  const custo = parseFloat(prompt("Custo por unidade:")).toFixed(2);
+  const venda = parseFloat(prompt("Preço de venda:")).toFixed(2);
+  const lucro = (venda - custo).toFixed(2);
+  const data = new Date().toLocaleDateString();
 
-// Render inicial
-renderTable();
-renderSales();
+  produtos.push({ produto, categoria, cor, qtd, custo, venda, lucro, data });
+  salvar();
+}
 
-// Salvar produto
-saveBtn.addEventListener('click', function () {
-  const name = document.getElementById('name').value.trim();
-  const category = document.getElementById('category').value.trim();
-  const color = document.getElementById('color').value.trim(); // COR
-  const quantity = parseInt(document.getElementById('quantity').value);
-  const cost = parseFloat(document.getElementById('cost').value);
-  const price = parseFloat(document.getElementById('price').value);
-  const date = new Date().toLocaleDateString('pt-BR');
+function vender(index) {
+  const p = produtos[index];
+  const pago = parseFloat(prompt(`Quanto o cliente pagou? Preço padrão: R$ ${p.venda}`));
+  const lucro = (pago - p.custo).toFixed(2);
+  const dataVenda = new Date().toLocaleString();
 
-  if (!name || isNaN(quantity) || isNaN(cost) || isNaN(price)) {
-    alert('Preencha todos os campos obrigatórios!');
-    return;
+  vendas.push({ produto: p.produto, categoria: p.categoria, lucro, dataVenda });
+  p.qtd -= 1;
+  if (p.qtd <= 0) produtos.splice(index, 1);
+  salvar();
+}
+
+function excluirProduto(index) {
+  produtos.splice(index, 1);
+  salvar();
+}
+
+function excluirTodasVendas() {
+  if (confirm("Tem certeza que quer excluir todas as vendas?")) {
+    vendas = [];
+    salvar();
   }
+}
 
-  const product = { name, category, color, quantity, cost, price, date };
-  products.push(product);
-  localStorage.setItem('products', JSON.stringify(products));
-  renderTable();
+function filtrarProdutos() {
+  render();
+}
 
-  // Limpa os campos
-  document.getElementById('name').value = '';
-  document.getElementById('category').value = '';
-  document.getElementById('color').value = '';
-  document.getElementById('quantity').value = '';
-  document.getElementById('cost').value = '';
-  document.getElementById('price').value = '';
+function exportarCSV() {
+  let csv = "Produto,Categoria,Cor,Qtd,Custo,Venda,Lucro Unidade,Data\n";
+  produtos.forEach(p => {
+    csv += `${p.produto},${p.categoria},${p.cor},${p.qtd},${p.custo},${p.venda},${p.lucro},${p.data}\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'estoque.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-  // Fecha modal
-  document.getElementById('productModal').style.display = 'none';
-});
+async function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-function renderTable() {
-  const filter = searchInput.value.toLowerCase();
-  inventory.innerHTML = '';
-  let totalQtd = 0, sumCost = 0, sumPrice = 0;
-
-  products.forEach((prod, i) => {
-    const match = (
-      prod.name.toLowerCase().includes(filter) ||
-      prod.category.toLowerCase().includes(filter) ||
-      (prod.color && prod.color.toLowerCase().includes(filter))
+  doc.text("Estoque Willy Imports", 10, 10);
+  let y = 20;
+  produtos.forEach(p => {
+    doc.text(
+      `${p.produto} | ${p.categoria} | ${p.cor} | Qtd: ${p.qtd} | Custo: R$ ${p.custo} | Venda: R$ ${p.venda} | Lucro: R$ ${p.lucro} | ${p.data}`,
+      10, y
     );
-
-    if (match) {
-      const lucroUnidade = prod.price - prod.cost;
-      const row = document.createElement('tr');
-
-      if (prod.quantity <= 3) row.style.backgroundColor = '#ffcccc';
-
-      row.innerHTML = `
-        <td>${prod.name}</td>
-        <td>${prod.category}</td>
-        <td>${prod.color || '-'}</td>
-        <td>${prod.quantity}</td>
-        <td>R$ ${prod.cost.toFixed(2)}</td>
-        <td>R$ ${prod.price.toFixed(2)}</td>
-        <td>R$ ${lucroUnidade.toFixed(2)}</td>
-        <td>${prod.date}</td>
-        <td>
-          <button onclick="removeOne(${i})" class="delete-btn">Excluir 1</button>
-        </td>
-      `;
-      inventory.appendChild(row);
-
-      totalQtd += prod.quantity;
-      sumCost += prod.cost * prod.quantity;
-      sumPrice += prod.price * prod.quantity;
+    y += 8;
+    if (y > 280) {
+      doc.addPage();
+      y = 20;
     }
   });
 
-  totalProducts.textContent = totalQtd;
-  totalCost.textContent = sumCost.toFixed(2);
-  totalPrice.textContent = sumPrice.toFixed(2);
-  totalProfit.textContent = (sumPrice - sumCost).toFixed(2);
+  doc.save("estoque.pdf");
 }
 
-function removeOne(index) {
-  const prod = products[index];
-  prod.quantity -= 1;
+function render() {
+  const filtro = document.getElementById('busca').value.toLowerCase();
+  const tbody = document.querySelector("#estoque tbody");
+  tbody.innerHTML = "";
+  let totalCusto = 0, totalVenda = 0;
 
-  const sale = {
-    name: prod.name,
-    category: prod.category,
-    color: prod.color,
-    lucro: (prod.price - prod.cost).toFixed(2),
-    date: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR')
-  };
-  salesHistory.push(sale);
+  produtos.forEach((p, i) => {
+    if (!p.produto.toLowerCase().includes(filtro)) return;
+    totalCusto += p.custo * p.qtd;
+    totalVenda += p.venda * p.qtd;
 
-  if (prod.quantity <= 0) {
-    products.splice(index, 1);
-  }
+    const tr = document.createElement('tr');
+    tr.classList.add('colored');
+    tr.innerHTML = `
+      <td>${p.produto}</td><td>${p.categoria}</td><td>${p.cor}</td><td>${p.qtd}</td>
+      <td>R$ ${p.custo}</td><td>R$ ${p.venda}</td><td>R$ ${p.lucro}</td><td>${p.data}</td>
+      <td>
+        <button class="blue" onclick="vender(${i})">Vender</button>
+        <button class="red" onclick="excluirProduto(${i})">Excluir ${p.qtd}</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-  localStorage.setItem('products', JSON.stringify(products));
-  localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+  document.getElementById('resumo').innerHTML = `
+    <p>Total de produtos: ${produtos.reduce((a, p) => a + p.qtd, 0)}</p>
+    <p>Valor total de custo: R$ ${totalCusto.toFixed(2)}</p>
+    <p>Valor total de venda: R$ ${totalVenda.toFixed(2)}</p>
+    <p>Lucro bruto estimado: R$ ${(totalVenda - totalCusto).toFixed(2)}</p>
+  `;
 
-  renderTable();
-  renderSales();
-}
-
-function renderSales() {
-  sales.innerHTML = '';
-  salesHistory.forEach(sale => {
-    const row = `<tr>
-      <td>${sale.name}</td>
-      <td>${sale.category}</td>
-      <td>R$ ${sale.lucro}</td>
-      <td>${sale.date}</td>
-    </tr>`;
-    sales.innerHTML += row;
+  const vendasTbody = document.querySelector("#vendas tbody");
+  vendasTbody.innerHTML = "";
+  vendas.forEach(v => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${v.produto}</td><td>${v.categoria}</td><td>R$ ${v.lucro}</td><td>${v.dataVenda}</td>`;
+    vendasTbody.appendChild(tr);
   });
 }
 
-exportBtn.addEventListener('click', function () {
-  let csv = 'Produto,Categoria,Cor,Quantidade,Custo,Preço de Venda,Lucro Unidade,Data\n';
-  products.forEach(prod => {
-    const lucroUnidade = prod.price - prod.cost;
-    csv += `${prod.name},${prod.category},${prod.color || '-'},${prod.quantity},${prod.cost.toFixed(2)},${prod.price.toFixed(2)},${lucroUnidade.toFixed(2)},${prod.date}\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.setAttribute('hidden', '');
-  a.setAttribute('href', url);
-  a.setAttribute('download', 'estoque.csv');
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-});
-
-searchInput.addEventListener('input', renderTable);
-const clearSalesBtn = document.getElementById('clear-sales');
-
-clearSalesBtn.addEventListener('click', function () {
-  const confirmClear = confirm("Tem certeza que deseja excluir todas as vendas? Essa ação não pode ser desfeita.");
-  if (confirmClear) {
-    salesHistory = [];
-    localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
-    renderSales();
-    alert("Histórico de vendas limpo com sucesso!");
-  }
-});
+render();
