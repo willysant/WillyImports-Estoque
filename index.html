@@ -1,168 +1,41 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WILLY IMPORTS</title>
-  <link rel="stylesheet" href="style.css"/>
-  <style>
-    /* Modal básico */
-    .modal {
-      display: none; 
-      position: fixed; 
-      z-index: 1; 
-      padding-top: 100px; 
-      left: 0;
-      top: 0;
-      width: 100%; 
-      height: 100%; 
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .modal-content input {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 8px;
-    }
-    .modal-content button {
-      background: #28a745;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      width: 100%;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #btnAddProduct {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .logo {
-      max-width: 120px;
-      display: block;
-      margin-bottom: 20px;
-    }
-  </style>
+  <title>WILLY IMPORTS - Controle de Estoque</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>WILLY IMPORTS</h1>
-  <img src="logo.png" alt="Logo Willy Imports" class="logo">
+  <button class="blue" onclick="adicionarProduto()">Adicionar Produto</button>
+  <input type="text" id="busca" placeholder="Buscar produto..." onkeyup="filtrarProdutos()" />
+  <button class="blue" onclick="exportarCSV()">Exportar Estoque (CSV)</button>
+  <button class="blue" onclick="exportarPDF()">Exportar Estoque (PDF)</button>
+  <img src="logo.png" alt="Logo" class="logo">
 
-  <!-- Botão para abrir modal -->
-  <button id="btnAddProduct">Adicionar Produto</button>
-
-  <!-- Modal de cadastro -->
-  <div id="productModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Novo Produto</h2>
-    <input type="text" placeholder="Nome do produto" id="name" required/>
-    <input type="text" placeholder="Categoria" id="category"/>
-    <input type="text" placeholder="Cor" id="color"/> <!-- NOVO -->
-    <input type="number" placeholder="Quantidade" id="quantity" required/>
-    <input type="number" placeholder="Preço de custo" id="cost" step="0.01" required/>
-    <input type="number" placeholder="Preço de venda" id="price" step="0.01" required/>
-    <button id="saveProduct" type="button">Salvar Produto</button>
-  </div>
-</div>
-
-<!-- Campo de busca e botão de exportar -->
-<input type="text" id="search" placeholder="🔍 Buscar produto, cor ou categoria" />
-<button id="export-btn">📄 Exportar Estoque (CSV)</button>
-
-<hr/>
-
-<h2>Estoque</h2>
-<table id="inventory">
-  <thead>
-    <tr>
-      <th>Produto</th>
-      <th>Categoria</th>
-      <th>Cor</th> <!-- NOVO -->
-      <th>Qtd</th>
-      <th>Custo</th>
-      <th>Venda</th>
-      <th>Lucro Unidade</th>
-      <th>Data</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-
-
-  <hr/>
-
-  <h2>Vendas Realizadas</h2>
-<button id="clear-sales" style="background-color: #dc3545; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
-  🗑️ Excluir Todas as Vendas
-</button>
-  <table id="sales">
+  <h2>Estoque</h2>
+  <table id="estoque">
     <thead>
       <tr>
-        <th>Produto</th>
-        <th>Categoria</th>
-        <th>Lucro Unidade</th>
-        <th>Data Venda</th>
+        <th>Produto</th><th>Categoria</th><th>Cor</th><th>Qtd</th><th>Custo</th><th>Venda</th><th>Lucro Unidade</th><th>Data</th><th>Ações</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <!-- Script de controle do modal -->
-  <script>
-    const modal = document.getElementById("productModal");
-    const btn = document.getElementById("btnAddProduct");
-    const span = document.getElementsByClassName("close")[0];
+  <div id="resumo"></div>
 
-    btn.onclick = function() {
-      modal.style.display = "block";
-    }
+  <h2>Vendas Realizadas</h2>
+  <button class="red" onclick="excluirTodasVendas()">🗑️ Excluir Todas as Vendas</button>
+  <table id="vendas">
+    <thead>
+      <tr><th>Produto</th><th>Categoria</th><th>Lucro Unidade</th><th>Data Venda</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  </script>
-
-  <!-- Script principal do sistema -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-  <script src="script.js"></script>
-</body>
-</html>
- <div id="totals">
-    <p><strong>Total de produtos:</strong> <span id="total-products">0</span></p>
-    <p><strong>Valor total de custo:</strong> R$ <span id="total-cost">0.00</span></p>
-    <p><strong>Valor total de venda:</strong> R$ <span id="total-price">0.00</span></p>
-    <p><strong>Lucro bruto estimado:</strong> R$ <span id="total-profit">0.00</span></p>
-  </div>
