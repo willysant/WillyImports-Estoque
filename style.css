@@ -1,25 +1,35 @@
 body {
+  background: #dbeaf7; /* tom azul claro igual ao print */
   font-family: Arial, sans-serif;
-  margin: 20px;
-  background: #f4f4f4;
+  padding: 20px;
 }
 
-header {
-  margin-bottom: 20px;
+h1 {
+  font-size: 28px;
 }
 
-header h1 {
-  margin: 0 0 10px 0;
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-header button, header input {
-  margin-right: 10px;
+button.blue {
+  background: #007bff;
+  color: white;
+}
+
+button.red {
+  background: #dc3545;
+  color: white;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 th, td {
@@ -28,11 +38,23 @@ th, td {
   text-align: left;
 }
 
-.low-stock {
-  background: #ffe5e5;
+tr {
+  background: white;
 }
 
-.totais p {
-  margin: 5px 0;
-  font-weight: bold;
+tr.colored {
+  background: #f5bcbc; /* rosa/vermelho claro */
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 80px;
+}
+
+input[type="text"] {
+  padding: 8px;
+  margin: 5px;
+  width: 200px;
 }
